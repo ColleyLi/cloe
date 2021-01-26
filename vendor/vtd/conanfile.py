@@ -1,5 +1,6 @@
 from pathlib import Path
 import shutil
+import os.path
 
 from conans import CMake, ConanFile, tools
 from conans.errors import ConanInvalidConfiguration
@@ -26,13 +27,14 @@ class VtdConan(ConanFile):
     _archive_base = "vtd.2.2.0.Base.20181231.tgz"
     _archive_osi = "vtd.2.2.0.addOns.OSI.20190513.tgz"
     _archive_rod = "vtd.2.2.0.addOns.ROD.Base.20190313.tgz"
-    exports_sources = [
-        _archive_base,
-        _archive_osi,
-        _archive_rod,
-    ]
-
     _root_dir = "VTD.2.2"
+
+    def export_sources(self):
+        self.copy(self._archive_base, symlinks=False)
+        if os.path.isfile(self._archive_osi):
+            self.copy(self._archive_osi, symlinks=False)
+        if os.path.isfile(self._archive_rod):
+            self.copy(self._archive_rod, symlinks=False)
 
     def configure(self):
         if self.settings.os == "Windows":
